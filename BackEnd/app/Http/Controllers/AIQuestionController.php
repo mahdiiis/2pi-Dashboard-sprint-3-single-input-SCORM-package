@@ -70,41 +70,27 @@ class AIQuestionController extends Controller
 {$validated['source_text']}
 === FIN DES TEXTES SOURCE ===
 
-� RÈGLE CRITIQUEMENT IMPORTANTE - À RESPECTER SANS EXCEPTION:
+🚀 DIRECTIVES POUR L'UTILISATION DES SOURCES :
 
-1. VÉRIFIE COMBIEN DE SOURCES TU AS:
-   - Compte les lignes avec \"=== SOURCE N:\"
-   - Si tu trouves SOURCE 1, SOURCE 2 (ou plus), tu as PLUSIEURS sources
-   - Si tu as qu'une seule source, utilise juste celle-ci
+1. ANALYSE DES SOURCES
+   - Les sources sont séparées par des indicateurs (ex: === SOURCE 1).
+   - Identifie le sujet et le contenu éducatif de chaque source.
 
-2. SI TU AS PLUSIEURS SOURCES:
-   ⚠️ OBLIGATION ABSOLUE: CHAQUE QUESTION DOIT VENIR D'UNE SOURCE DIFFÉRENTE
-   - Les questions DOIVENT alterner ou se mélanger entre les sources
-   - Tu ne peux PAS faire 5 questions du PDF et 0 de l'URL
-   - Tu ne peux PAS ignorer une source entière
-   - INTERDIT ABSOLU: Générer des questions d'une seule source quand tu en as plusieurs
+2. RÉPARTITION ÉQUILIBRÉE (TRÈS IMPORTANT)
+   - Si tu reçois PLUSIEURS sources, tes questions DOIVENT impérativement utiliser les informations de TOUTES les sources.
+   - Sélectionne des concepts variés venant de chaque document pour que le quiz reflète l'ensemble des sources fournies.
 
-   EXEMPLE DE CE QUI EST INTERDIT:
-   ❌ Niveau 1: Q1(PDF), Q2(PDF), Q3(PDF), Q4(PDF), Q5(PDF) ← INTERDIT, pas d'URL!
+3. PRIORITÉ AUX INSTRUCTIONS DU PROFESSEUR
+   - Si le professeur demande explicitement d'utiliser une source par niveau (ex: \"Niveau 1 = URL, Niveau 2 = PDF\"), applique cette règle de répartition spécifique.
 
-   EXEMPLE DE CE QUI EST OBLIGATOIRE:
-   ✅ Niveau 1: Q1(PDF), Q2(URL), Q3(PDF), Q4(URL), Q5(PDF) ← BON, mélange les deux
-   ✅ Niveau 1: Q1(PDF), Q2(PDF), Q3(URL), Q4(URL), Q5(URL) ← BON aussi, les deux sources utilisées
+4. RÉDACTION DES QUESTIONS
+   - Écris les questions naturellement sur le sujet (ex: \"Comment calcule-t-on l'aire d'un triangle ?\").
+   - N'ajoute AUCUN label indiquant l'origine de la question (PAS de mentions type \"(Source 1)\", \"Selon le PDF\", etc.).
+   - Concentre-toi sur le savoir, ignore les métadonnées (titres de pages web, numéros de page, interface utilisateur).
 
-3. CHAQUE QUESTION DOIT SPÉCIFIER SA SOURCE MENTALEMENT:
-   - Avant de générer une question, demande-toi: \"Cette question vient de SOURCE 1 ou SOURCE 2?\"
-   - Si tu génères trop de questions de SOURCE 1, génère la prochaine de SOURCE 2
-   - Si SOURCE 1 parle d'addition, SOURCE 2 de triangles → la question DOIT être sur les triangles, pas juste labellisée comme SOURCE 2
-   - Les questions DOIVENT porter sur le SUJET RÉEL de chaque source (pas juste les labelliser)
-
-🎯 CAS SPÉCIAL - Si l'instruction du professeur dit \"level 1 from URL, level 2 from PDF\":
-   * UNIQUEMENT dans ce cas, ignore la règle du mélange
-   * Utilise UNIQUEMENT la source spécifiée pour chaque niveau
-   * Sinon, applique TOUJOURS la règle du mélange
-
-- INTERDIT ABSOLU: Questions sur MÉTADONNÉES (titres, sujets, noms d'exercices)
-- INTERDIT: Ajouter des labels comme \"(Source : PDF)\" ou \"(Source : URL)\" dans les questions
-- CORRECT: \"Combien font 3/4 + 1/4 ?\", \"Comment calcule-t-on l'aire d'un triangle ?\", \"Quelle est la définition de l'addition ?\"
+5. SOURCES NON ÉDUCATIVES (TRÈS IMPORTANT)
+   - Si une source ne contient AUCUN contenu éducatif (ex: juste \"Partagez vos vidéos avec vos amis\", des liens, du spam, ou aucune information pertinente sur le sujet), IGNORE son contenu.
+   - Si TOUTES les sources sont non-éducatives, génère simplement des questions de qualité basées sur tes propres connaissances du COURS et du SUJET.
 ";
         }
 

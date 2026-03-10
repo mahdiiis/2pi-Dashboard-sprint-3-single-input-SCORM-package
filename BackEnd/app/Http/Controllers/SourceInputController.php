@@ -202,13 +202,19 @@ class SourceInputController extends Controller
 
         // ✅ ONLY use description as fallback content, NO title
         $fallback = '';
-        if ($description) $fallback = $description;
-        // Removed: if ($title) $fallback .= "Video Title: {$title}\n\n";
+        if ($description) {
+            $descLower = strtolower(trim($description));
+            // Ignore YouTube's default boilerplate descriptions
+            if (!str_contains($descLower, 'partagez vos vidéos avec vos amis') && 
+                !str_contains($descLower, 'share your videos with friends, family, and the world')) {
+                $fallback = $description;
+            }
+        }
 
         if (empty(trim($fallback))) {
             return response()->json([
                 'success' => false,
-                'message' => 'This video has no accessible captions. Try a video with CC/subtitles enabled on YouTube.',
+                'message' => 'This video has no accessible captions and no useful description. Try a video with CC/subtitles enabled.',
             ], 422);
         }
 
@@ -424,10 +430,42 @@ class SourceInputController extends Controller
     }
 
     /**
-     * Fetch video description via a lightweight page scrape (for Tier-3 fallback only).
+     * Fetch video description via YouTube API for full text.
      */
     private function fetchYoutubeDescriptionViaPage(string $videoId): ?string
     {
+        try {
+            // Tier 1 for Description: youtubei API (has the full description)
+            $apiUrl  = 'https://youtubei.googleapis.com/youtubei/v1/player?key=AIzaSyAO_FJ2SlqU8Q4STEHLGCilw_Y9_11qcW8';
+            $payload = [
+                'videoId' => $videoId,
+                'context' => [
+                    'client' => [
+                        'clientName'    => 'WEB',
+                        'clientVersion' => '2.20231121.08.00',
+                        'hl'            => 'fr',
+                        'gl'            => 'MA',
+                    ],
+                ],
+            ];
+
+            $resp = Http::timeout(10)
+                ->withHeaders([
+                    'Content-Type' => 'application/json',
+                    'Origin'       => 'https://www.youtube.com',
+                ])
+                ->post($apiUrl, $payload);
+
+            if ($resp->successful()) {
+                $data = $resp->json();
+                $desc = $data['videoDetails']['shortDescription'] ?? null;
+                if (!empty(trim($desc))) {
+                    return $desc;
+                }
+            }
+        } catch (\Exception) {}
+
+        // Fallback: Lightweight page scrape
         try {
             $resp = Http::timeout(10)
                 ->withHeaders([
@@ -436,11 +474,11 @@ class SourceInputController extends Controller
                 ])
                 ->get("https://www.youtube.com/watch?v={$videoId}");
 
-            if (!$resp->successful()) return null;
-
-            $html = $resp->body();
-            if (preg_match('/<meta\s+(?:name|property)="(?:og:)?description"\s+content="([^"]+)"/i', $html, $m)) {
-                return html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
+            if ($resp->successful()) {
+                $html = $resp->body();
+                if (preg_match('/<meta\s+(?:name|property)="(?:og:)?description"\s+content="([^"]+)"/i', $html, $m)) {
+                    return html_entity_decode($m[1], ENT_QUOTES, 'UTF-8');
+                }
             }
         } catch (\Exception) {}
         return null;
